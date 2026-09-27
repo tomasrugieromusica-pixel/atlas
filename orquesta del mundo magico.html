@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>La Orquesta del Mundo Mágico</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #111827;
+      color: #ffffff;
+      text-align: center;
+    }
+    main {
+      padding: 32px 22px;
+      max-width: 420px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    p {
+      line-height: 1.5;
+      opacity: 0.9;
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px 22px;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #111827;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 12px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #d1d5db;
+      text-decoration: underline;
+      font-weight: 500;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>La Orquesta del Mundo Mágico</h1>
+    <p id="message">Abriendo la página de entradas…</p>
+
+    <a id="mainButton" class="btn" href="#">Continuar</a>
+    <a id="secondaryButton" class="btn btn-secondary" href="#">Ir directamente al sitio web</a>
+  </main>
+
+  <script>
+    (function () {
+      const destination =
+        "https://panel.alternativateatral.com/obra100784-la-orquesta-del-mundo-magico-concierto-sinfonico-dedicado-a-las-peliculas-inspiradas-en-la-saga-literaria-de-j-k-rowling" +
+        "?utm_source=ig&utm_medium=social&utm_content=link_in_bio";
+
+      const ua = navigator.userAgent || "";
+      const isAndroid = /Android/i.test(ua);
+      const isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+      const message = document.getElementById("message");
+      const mainButton = document.getElementById("mainButton");
+      const secondaryButton = document.getElementById("secondaryButton");
+
+      // El enlace secundario siempre apunta al destino original de respaldo
+      secondaryButton.href = destination;
+
+      function openAndroidChrome() {
+        const u = new URL(destination);
+        // Formato de Intent nativo para abrir Google Chrome en Android
+        const intent =
+          "intent://" +
+          u.host +
+          u.pathname +
+          u.search +
+          "#Intent;scheme=https;package=com.android.chrome;end";
+
+        window.location.href = intent;
+      }
+
+      if (isAndroid) {
+        message.textContent = "Redirigiendo a Google Chrome…";
+        mainButton.textContent = "Abrir en Chrome";
+        mainButton.href = "#";
+
+        mainButton.addEventListener("click", function (e) {
+          e.preventDefault();
+          openAndroidChrome();
+        });
+
+        // Auto-ejecución en Android
+        setTimeout(openAndroidChrome, 100);
+
+      } else if (isIOS) {
+        message.textContent = "Toca el botón para continuar y evitar la alerta de Instagram.";
+        mainButton.textContent = "Abrir en Chrome";
+
+        mainButton.addEventListener("click", function (e) {
+          e.preventDefault();
+          
+          // Construye la URL para lanzar la app de Google Chrome en iOS
+          const cleanUrl = destination.replace(/^https?:\/\//, "");
+          const chromeScheme = "googlechrome://" + cleanUrl;
+
+          // Intenta abrir Chrome
+          window.location.href = chromeScheme;
+
+          // Si pasados unos milisegundos la app de Chrome no tomó el control,
+          // redirige al sitio web en el navegador del sistema
+          setTimeout(function () {
+            window.location.href = destination;
+          }, 1000);
+        });
+
+      } else {
+        // Para PC o navegadores de escritorio
+        message.textContent = "Redirigiendo a la página de venta de entradas…";
+        mainButton.style.display = "none";
+        
+        setTimeout(function () {
+          window.location.replace(destination);
+        }, 100);
+      }
+    })();
+  </script>
+</body>
+</html>
